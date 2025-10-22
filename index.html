@@ -1,191 +1,496 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🌙 Smartschool Achievements - Extensie</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: #0e0e0e;
-      color: #f1f1f1;
-      text-align: center;
-      overflow-x: hidden;
-      line-height: 1.8;
-      padding: 0 10%;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌙 Smartschool Achievements - Extensie</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent: #ff7a00;
+  --accent-light: #ffa64d;
+  --timeline-point: #fff8e1;
+  --bg-dark: #0d0d0d;
+  --bg-darker: #050505;
+}
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: radial-gradient(circle at top left, var(--bg-darker), var(--bg-dark) 70%);
+  color: #f3f3f3;
+  overflow-x: hidden;
+  text-align: center;
+  line-height: 1.8;
+  scroll-behavior: smooth;
+}
 
-    header {
-      padding: 100px 20px 60px;
-      animation: fadeDown 1.2s ease-out;
-    }
+/* Glow overlay header */
+header {
+  padding: 120px 20px 80px;
+  background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+  position: relative;
+  overflow: hidden;
+}
+header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(255,122,0,0.17), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: shimmerGlow 8s linear infinite;
+}
 
-    h1 {
-      font-size: 3.2rem;
-      font-weight: 700;
-      color: #ff7a00;
-      animation: slideIn 1.5s ease-out;
-    }
+/* Glow shimmer animation */
+@keyframes shimmerGlow {
+  0% { opacity: 0.75; }
+  50% { opacity: 1; }
+  100% { opacity: 0.75; }
+}
 
-    h2 {
-      color: #ffa64d;
-      font-size: 2rem;
-      margin-bottom: 15px;
-    }
+/* Title Animations */
+h1, h2 {
+  transition: 
+    color 0.4s cubic-bezier(.6, .6, .2, 1.5),
+    text-shadow 0.4s cubic-bezier(.6, .6, .2, 1.5),
+    background 0.5s cubic-bezier(.75,.4,.4,1.3);
+  position: relative;
+  z-index: 1;
+}
+h1 {
+  font-size: 3.6rem;
+  color: var(--accent);
+  text-shadow: 0 0 25px rgba(255, 122, 0, 0.85), 0 0 50px rgba(255, 166, 77, 0.6);
+  background: linear-gradient(90deg, var(--accent), #ffe6c0, var(--accent-light), var(--accent));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: colorMove 6s linear infinite, glowPulse 3.5s ease-in-out infinite, fadeDown 1.2s ease-out;
+}
+h1:hover {
+  background-position: 100% 0;
+  color: #fff8e1;
+  text-shadow: 0 0 60px rgba(255,166,77,1), 0 0 120px rgba(255,166,77,0.6);
+}
+h2 {
+  color: var(--accent-light);
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+  text-shadow: 0 0 15px rgba(255,166,77,0.7);
+  background: linear-gradient(90deg, var(--accent-light), #ffe6c0, var(--accent));
+  background-size: 300% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all .5s;
+}
+h2:hover {
+  background-position: 100% 0;
+  color: var(--accent);
+  text-shadow: 0 0 45px rgba(255,122,0,0.75), 0 0 70px rgba(255,166,77,0.6);
+}
+@keyframes colorMove {
+  to { background-position: 200% 0; }
+}
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-40px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(50px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+@keyframes glowPulse {
+  0%, 100% { text-shadow: 0 0 20px rgba(255, 122, 0, 0.93);}
+  50% { text-shadow: 0 0 55px rgba(255, 166, 77, 1);}
+}
 
-    p {
-      font-size: 1.1rem;
-      max-width: 650px;
-      margin: 15px auto;
-      animation: fadeUp 1.5s ease-in;
-    }
+/* Fade on scroll effect */
+section {
+  margin: 100px auto;
+  padding: 60px;
+  max-width: 900px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255, 122, 0, 0.17);
+  border-radius: 25px;
+  box-shadow: 0 0 40px rgba(255,122,0,0.09), inset 0 0 20px rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  transform: translateY(50px) scale(0.98);
+  opacity: 0;
+  transition: 
+    transform 0.8s cubic-bezier(.8,.4,.2,1.2) 0.08s,
+    box-shadow 0.65s, 
+    opacity 0.7s;
+}
+section.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  box-shadow: 0 0 46px 0px rgba(255,122,0,0.17), 0 0 65px #ffa64d38;
+}
+section:hover {
+  box-shadow: 0 0 50px rgba(255, 122, 0, 0.45), 0 0 60px rgba(255,166,77,0.26) inset;
+  background: linear-gradient(120deg, rgba(255,255,255,0.045), rgba(255,241,200,0.025));
+}
 
-    section {
-      margin: 80px auto;
-      padding: 50px;
-      max-width: 850px;
-      background: rgba(255, 255, 255, 0.04);
-      border-radius: 25px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      animation: floatIn 1.5s ease;
-    }
+/* Glimmer effect for btn */
+.btn-discord {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light), #fff8e1, var(--accent));
+  color: #fff;
+  padding: 15px 40px;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1.1rem;
+  box-shadow: 0 0 40px rgba(255, 122, 0, 0.5), 0 0 8px #fff inset;
+  margin-top: 25px;
+  transition:
+    background 0.45s cubic-bezier(.7,.7,.2,1.2),
+    box-shadow 0.45s,
+    color 0.28s,
+    filter 0.22s,
+    transform 0.3s cubic-bezier(.73,.45,.67,1.67);
+  filter: brightness(1.07);
+  background-size: 300% auto;
+  position: relative;
+  overflow: hidden;
+}
+.btn-discord::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: -60%;
+  width: 200%;
+  height: 180%;
+  pointer-events: none;
+  background: linear-gradient(120deg, transparent, #fff7ad8a 50%, transparent 80%);
+  opacity: 0.26;
+  z-index: 0;
+  transform: rotate(-12deg);
+  animation: btnGlimmer 3.7s infinite linear;
+}
+@keyframes btnGlimmer {
+  0% { transform: translateX(-90%) rotate(-12deg);}
+  50% { transform: translateX(80%) rotate(-12deg);}
+  100% { transform: translateX(170%) rotate(-12deg);}
+}
+.btn-discord:hover, .btn-discord:focus {
+  background-position: 100% 0;
+  color: #ffe6c0;
+  box-shadow: 0 0 90px rgba(255,166,77,1), 0 0 25px #fff8e1 inset;
+  filter: brightness(1.22);
+  transform: scale(1.13) rotate(-1.5deg);
+  outline: none;
+}
 
-    section:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 14px 35px rgba(255, 122, 0, 0.4);
-    }
+/* Timeline Block */
+.timeline {
+  position: relative;
+  margin: 60px auto 40px auto;
+  max-width: 760px;
+  text-align: left;
+  padding-left: 29px;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 18px;
+  top: 10px;
+  bottom: 10px;
+  width: 4px;
+  background: linear-gradient(180deg, var(--accent), #ffe6c0 70%, var(--accent-light));
+  border-radius: 6px;
+  box-shadow: 0 0 12px var(--accent-light), 0 0 24px #fff8e13f;
+  animation: timelinePulse 5.5s infinite alternate;
+}
+@keyframes timelinePulse {
+  0% { box-shadow: 0 0 16px var(--accent-light), 0 0 6px #fff8e166; }
+  100% { box-shadow: 0 0 30px var(--accent-light), 0 0 12px #fff8e1aa;}
+}
+.timeline-entry {
+  position: relative;
+  margin-bottom: 35px;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.75s cubic-bezier(.55,1.2,.45,1.07);
+}
+.timeline-entry.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.timeline-date {
+  background: linear-gradient(90deg, var(--accent-light), var(--accent));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding-left: 18px;
+  filter: drop-shadow(0 0 3px #ffe6c0) drop-shadow(0 0 8px var(--accent));
+}
+.timeline-content {
+  margin-left: 41px;
+  padding: 17px 25px 12px 18px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 18px 18px 18px 6px;
+  box-shadow: 0 0 22px rgba(255,122,0,0.11);
+  border-left: 4px solid var(--accent);
+  filter: blur(0);
+  color: #fff7e0;
+  min-height: 35px;
+}
 
-    .btn-discord {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background-color: #5865F2;
-      color: white;
-      padding: 15px 35px;
-      border-radius: 50px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.4s ease;
-      animation: pulse 2s infinite;
-      font-size: 1.1rem;
-      margin-top: 15px;
-    }
+/* Makers */
+.creators {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 60px;
+  margin-top: 60px;
+}
+.creator {
+  background: radial-gradient(circle at top, rgba(255,122,0,0.07), rgba(255,255,255,0.03));
+  padding: 25px 30px;
+  border-radius: 20px;
+  max-width: 280px;
+  box-shadow: 0 0 29px rgba(255, 122, 0, 0.32);
+  transition: transform 0.44s, box-shadow 0.44s;
+}
+.creator:hover {
+  transform: translateY(-10px) scale(1.04);
+  box-shadow: 0 0 39px rgba(255, 122, 0, 0.59);
+}
+.creator img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  box-shadow: 0 0 32px rgba(255, 122, 0, 0.95), 0 0 8px #fff inset;
+  margin-bottom: 15px;
+  transition: box-shadow 0.5s cubic-bezier(.6,.6,.2,1.4);
+}
+.creator img:hover {
+  box-shadow: 0 0 70px rgba(255, 166, 77, 0.85), 0 0 20px #fff inset;
+}
 
-    .btn-discord:hover {
-      background-color: #4752C4;
-      transform: scale(1.08);
-      box-shadow: 0 0 25px #5865F2;
-    }
+footer {
+  margin: 100px 0 40px;
+  font-size: 0.9rem;
+  color: #aaa;
+  text-align: center;
+}
 
-    .creators {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 40px;
-      margin-top: 60px;
-      animation: fadeUp 2s ease;
-    }
+/* Mobiel */
+@media (max-width: 800px) {
+  .timeline { padding-left: 13px;}
+  .timeline-content { padding-left: 14px; }
+}
+@media (max-width: 700px) {
+  h1 { font-size: 2.4rem; }
+  section { margin: 60px 10px; padding: 25px; }
+  .timeline { margin: 40px 0 30px 0; }
+}
 
-    .creator {
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      gap: 10px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      padding: 20px 30px;
-      box-shadow: 0 0 20px rgba(255, 122, 0, 0.3);
-      max-width: 280px;
-    }
+/* Fade-in voor p (voor als je extra animatie wilt) */
+p, .creator, .btn-discord {
+  transition: box-shadow 0.6s cubic-bezier(.65,.4,.5,1.4), opacity .6s;
+}
 
-    .creator img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      box-shadow: 0 0 20px #ff7a00;
-    }
+.roadmap {
+  margin-top: 35px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.milestone {
+  background: linear-gradient(115deg, rgba(255,255,255,0.03), rgba(255,166,77,0.05));
+  border: 1px solid rgba(255,122,0,0.13);
+  border-left: 5px solid var(--accent);
+  padding: 20px 25px;
+  border-radius: 16px;
+  box-shadow: 0 0 25px rgba(255,122,0,0.09), inset 0 0 10px rgba(255,255,255,0.04);
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(.55,1.25,.45,1.07);
+}
+.milestone.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.milestone-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--accent-light);
+  text-shadow: 0 0 10px rgba(255,166,77,0.6);
+}
+.progress-bar {
+  height: 10px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.progress {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light), #fff8e1);
+  background-size: 200% auto;
+  border-radius: 20px;
+  animation: progressGlow 3s linear infinite alternate;
+}
+@keyframes progressGlow {
+  0% { box-shadow: 0 0 10px rgba(255,166,77,0.5); background-position: 0 0; }
+  100% { box-shadow: 0 0 25px rgba(255,166,77,0.9); background-position: 200% 0; }
+}
 
-    .creator p {
-      font-size: 1rem;
-      opacity: 0.9;
-      max-width: 230px;
-    }
-
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-40px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-80px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    @keyframes floatIn {
-      from { opacity: 0; transform: translateY(60px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    footer {
-      margin: 80px 0;
-      font-size: 0.9rem;
-      opacity: 0.8;
-      color: #ccc;
-      animation: fadeUp 2s ease;
-    }
-  </style>
+</style>
 </head>
 <body>
-  <header>
-    <h1>🏆 Smartschool Achievements</h1>
-    <p>✨ Motivatie, progressie en plezier — allemaal in je Smartschool-omgeving.</p>
-  </header>
+<header>
+  <h1>🏆 Smartschool Achievements</h1>
+  <p>✨ Motivatie, progressie en plezier — allemaal in je Smartschool-omgeving.</p>
+</header>
 
-  <section>
-    <h2>🎯 Wat is het?</h2>
-    <p>Smartschool Achievements maakt leren leuker met XP, levels en beloningen. Je prestaties worden automatisch herkend, zodat jij gemotiveerd blijft zonder extra moeite.</p>
-  </section>
+<section>
+  <h2>❓ Wat is het?</h2>
+  <p>Smartschool Achievements maakt leren leuker met XP, levels en beloningen. Je prestaties worden automatisch herkend, zodat jij gemotiveerd blijft zonder extra moeite.</p>
+</section>
 
-  <section>
-    <h2>🔥 Waarom gebruiken?</h2>
-    <p>De extensie voegt een vleugje gamification toe aan Smartschool: vooruitgang wordt zichtbaar, leren voelt lonend, en elke taak brengt je dichter bij een hoger level. 💪</p>
-    <p>Of je nu wil bijhouden hoe actief je bent, of gewoon plezier wil hebben met je vrienden — Smartschool Achievements maakt school nét iets leuker. 🎮</p>
-  </section>
+<section>
+  <h2>🔥 Waarom gebruiken?</h2>
+  <p>De extensie voegt een vleugje gamification toe aan Smartschool: vooruitgang wordt zichtbaar, leren voelt lonend, en elke taak brengt je dichter bij een hoger level. 💪</p>
+  <p>Of je nu wil bijhouden hoe actief je bent, of gewoon plezier wil hebben met je vrienden — Smartschool Achievements maakt school nét iets leuker. 🎮</p>
+</section>
 
-  <section>
-    <h2>💬 Sluit je aan bij de community</h2>
-    <p>Bug gevonden of suggestie? Laat het weten via onze officiële Discord — daar krijg je ook nieuws over updates en sneak peeks!</p>
-    <a href="https://discord.gg/Sk5QDAyq7D" target="_blank" class="btn-discord">🐞 Meld bugs of geef feedback via Discord</a>
-  </section>
+<section>
+  <h2>🗺️ Roadmap</h2>
+  <p>We bouwen voortdurend verder aan Smartschool Achievements. Hier zie je waar we staan en wat eraan komt.</p>
 
-  <section>
-    <h2>👥 De makers</h2>
-    <div class="creators">
-      <div class="creator">
-        <img src="https://avatars.githubusercontent.com/u/204455839?v=4" alt="Maker profielfoto">
-        <p><strong>@super_man2775</strong><br>💡 “Deze extensie begon als een klein idee om Smartschool leuker te maken — en kijk waar we nu staan.”</p>
+  <div class="roadmap">
+    <div class="milestone visible">
+      <div class="milestone-header">
+        <span class="milestone-date">✅ 2025</span>
+        <span class="milestone-title">Start of the project</span>
       </div>
-      <div class="creator">
-        <img src="https://avatars.githubusercontent.com/u/200642566?v=4" alt="Broodje565 profielfoto">
-        <p><strong>@Broodje565</strong><br>🚀 “Elke update maakt het beter. We bouwen iets waar leerlingen echt plezier aan beleven.”</p>
-      </div>
+      <div class="progress-bar"><div class="progress" style="width:100%;"></div></div>
+      <p>Lancering Discord server en community.</p>
     </div>
-  </section>
 
-  <footer>
-    <p>© 2025 Smartschool Achievements — Niet officieel verbonden aan Smartschool.</p>
-  </footer>
+    <div class="milestone visible">
+      <div class="milestone-header">
+        <span class="milestone-date">🚧 2025</span>
+        <span class="milestone-title">Beta release</span>
+      </div>
+      <div class="progress-bar"><div class="progress" style="width:100%;"></div></div>
+      <p>Eerste beta release. Er worden testers aangenomen.</p>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-header">
+        <span class="milestone-date">🚀 ???</span>
+        <span class="milestone-title">Eerste officiele release</span>
+      </div>
+      <div class="progress-bar"><div class="progress" style="width:40%;"></div></div>
+      <p>De extensie is af en wordt uigebracht. Het is (hopelijk) een succes</p>
+    </div>
+
+    <div class="milestone">
+      <div class="milestone-header">
+        <span class="milestone-date">🧩 ???</span>
+        <span class="milestone-title">Online community</span>
+      </div>
+      <div class="progress-bar"><div class="progress" style="width:0%;"></div></div>
+      <p>Vanaf bestaan er leaderboards, ranks en battles. Er komt ook een modus waarin je een vriendencompetitie kunt doen.</p>
+    </div>
+  </div>
+</section>
+
+
+<section>
+  <h2>📜 Geschiedenis</h2>
+  <div class="timeline">
+    <div class="timeline-entry">
+      <div class="timeline-date">2024</div>
+      <div class="timeline-content">Eerste idee geboren tijdens een saaie les. Super_man2775 doet er niks mee.</div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-date">2025 (Begin oktober)</div>
+      <div class="timeline-content">Super_man2775 heeft zin in iets groots. Hij denkt na en komt uit op Smartschool Achievements.</div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-date">Later in Oktober 2025</div>
+      <div class="timeline-content">De Discord server wordt gelanceerd. Broodje565 wordt co-owner.</div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-date">2026</div>
+      <div class="timeline-content">Lorem ipsum dolor sit amet.</div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-date">2027</div>
+      <div class="timeline-content">Lorem ipsum dolor sit amet.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>📘 Need help?</h2>
+  <p>Klaar om te starten? Download de extensie via de Chrome Web Store. Simpel, snel, slim. Toch hulp nodig? Join de Discord</p>
+  <a href="https://discord.gg/Sk5QDAyq7D" target="_blank" class="btn-discord">Join our Discord!</a>
+</section>
+
+<section>
+  <h2>👥 De makers</h2>
+  <div class="creators">
+    <div class="creator">
+      <img src="https://avatars.githubusercontent.com/u/204455839?v=4" alt="Maker profielfoto">
+      <p><strong>@super_man2775</strong><br>💡 “Deze extensie begon als een klein idee om Smartschool leuker te maken — en kijk waar we nu staan.”</p>
+    </div>
+    <div class="creator">
+      <img src="https://avatars.githubusercontent.com/u/200642566?v=4" alt="Broodje565 profielfoto">
+      <p><strong>@Broodje565</strong><br>🚀 “Elke update maakt het beter. We bouwen iets waar leerlingen echt plezier aan beleven.”</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Smartschool Achievements — Niet officieel verbonden aan Smartschool.</p>
+</footer>
+
+<script>
+// Fade-in voor sections bij scroll in beeld
+const faders = document.querySelectorAll('section');
+const options = { threshold: 0.18 };
+const onEntry = (entries, observer) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting)
+      entry.target.classList.add('visible');
+  });
+};
+const observer = new IntersectionObserver(onEntry, options);
+faders.forEach(section => observer.observe(section));
+
+// Timeline entries fade-in animation
+const tentries = document.querySelectorAll('.timeline-entry');
+const timelineOb = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting)
+      entry.target.classList.add('visible');
+  });
+}, { threshold: 0.18 });
+tentries.forEach(te => timelineOb.observe(te));
+
+// Roadmap scroll-animatie
+const milestones = document.querySelectorAll('.milestone');
+const milestoneObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting)
+      entry.target.classList.add('visible');
+  });
+}, { threshold: 0.2 });
+milestones.forEach(m => milestoneObserver.observe(m));
+
+</script>
 </body>
 </html>
