@@ -547,127 +547,79 @@ h1:hover, h2:hover {
 <footer>
   <p>© 2025 Smartschool Achievements — Niet officieel verbonden aan Smartschool.</p>
 </footer>
-
 <script>
-// ========== 🔥 SETTINGS ==========
-const XP_PER_CLICK = 10;
-let totalXP = 0;
-
-// ========== 🌌 PARALLAX SCROLL ==========
-const header = document.querySelector('header');
-window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY * 0.4;
-  header.style.backgroundPosition = `center ${scrollY}px`;
-  header.style.transform = `translateY(${scrollY * 0.08}px)`;
+// ========== 🌈 ELEMENT ANIMATIONS & INIT ==========
+window.addEventListener('DOMContentLoaded', () => {
+  const faders = document.querySelectorAll('section, .timeline-entry, .milestone');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.3 });
+  faders.forEach(el => observer.observe(el));
 });
 
-// ========== 💎 XP COUNTER ==========
+// ========== 💫 DYNAMIC XP COUNTER ==========
+const XP_PER_CLICK = 10;
+let totalXP = 0;
 const xpDisplay = document.createElement('div');
-xpDisplay.id = 'xp-counter';
-xpDisplay.style.position = 'fixed';
-xpDisplay.style.top = '20px';
-xpDisplay.style.right = '20px';
-xpDisplay.style.padding = '10px 20px';
-xpDisplay.style.background = 'linear-gradient(90deg,#ff7a00,#ffa64d)';
-xpDisplay.style.color = '#fff';
-xpDisplay.style.fontWeight = '700';
-xpDisplay.style.borderRadius = '14px';
-xpDisplay.style.boxShadow = '0 0 25px rgba(255,122,0,0.6)';
-xpDisplay.style.fontFamily = "'Poppins', sans-serif";
-xpDisplay.style.zIndex = '999';
+Object.assign(xpDisplay.style, {
+  position: 'fixed',
+  top: '20px', right: '20px',
+  background: 'linear-gradient(90deg,#ff7a00,#ffa64d)',
+  color: '#fff', padding: '10px 20px',
+  fontWeight: '700', borderRadius: '16px',
+  boxShadow: '0 0 25px rgba(255,122,0,0.6)',
+  zIndex: 999
+});
 xpDisplay.textContent = 'XP: 0';
 document.body.appendChild(xpDisplay);
 
 function addXP(amount = XP_PER_CLICK) {
   totalXP += amount;
   xpDisplay.textContent = `XP: ${totalXP}`;
-  xpDisplay.animate([
-    { transform: 'scale(1)', filter: 'brightness(1)' },
-    { transform: 'scale(1.2)', filter: 'brightness(1.5)' },
-    { transform: 'scale(1)', filter: 'brightness(1)' }
-  ], { duration: 400, easing: 'ease-out' });
+  xpDisplay.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.25)' }, { transform: 'scale(1)' }],
+                    { duration: 400, easing: 'ease-out' });
 }
 
-// Klikbare elementen die XP geven
+// ========== ✨ CLICKABLE XP TRIGGERS ==========
 document.querySelectorAll('.btn-discord, .creator, .milestone').forEach(el => {
   el.addEventListener('click', () => addXP());
 });
 
-// ========== 🏆 ACHIEVEMENT POPUPS ==========
+// ========== 🏆 ACHIEVEMENT UNLOCK ==========
 function showAchievement(text) {
   const box = document.createElement('div');
   box.textContent = `🏆 Achievement unlocked: ${text}`;
   Object.assign(box.style, {
-    position: 'fixed',
-    top: '20px',
-    right: '-400px',
+    position: 'fixed', top: '20px', right: '-400px',
     background: 'linear-gradient(90deg,#ff7a00,#ffa64d)',
-    color: '#fff',
-    padding: '12px 25px',
-    borderRadius: '12px',
-    fontWeight: '600',
-    fontFamily: "'Poppins', sans-serif",
-    boxShadow: '0 0 25px rgba(255,122,0,0.5)',
-    zIndex: 9999,
-    transition: 'right 0.6s ease, opacity 0.5s',
+    color: '#fff', padding: '12px 25px',
+    borderRadius: '12px', boxShadow: '0 0 25px rgba(255,122,0,0.4)',
+    zIndex: 10000, transition: 'right 0.7s ease, opacity 0.7s'
   });
   document.body.appendChild(box);
-  setTimeout(() => box.style.right = '20px', 100);
-  setTimeout(() => { box.style.right = '-400px'; box.style.opacity = '0'; }, 3500);
+  setTimeout(() => (box.style.right = '20px'), 100);
+  setTimeout(() => { box.style.opacity = '0'; box.style.right = '-400px'; }, 3500);
   setTimeout(() => box.remove(), 4200);
 }
 
-const achievementObserver = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting && !entry.target.dataset.achieved) {
-      entry.target.dataset.achieved = 'true';
-      const title = entry.target.querySelector('h2')?.textContent || 'Nieuwe sectie';
-      showAchievement(title);
-      addXP(25);
+const secObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !e.target.dataset.done) {
+      e.target.dataset.done = 'yes';
+      const name = e.target.querySelector('h2')?.textContent || 'Nieuwe sectie';
+      showAchievement(name);
+      addXP(30);
     }
   });
-}, { threshold: 0.6 });
-document.querySelectorAll('section').forEach(sec => achievementObserver.observe(sec));
+}, { threshold: 0.65 });
+document.querySelectorAll('section').forEach(sec => secObserver.observe(sec));
 
-// ========== 🔊 HOVER GELUID ==========
-const hoverSound = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_0c3790b4b5.mp3?filename=click-124467.mp3');
-hoverSound.volume = 0.15;
-document.querySelectorAll('.btn-discord, .creator, .milestone').forEach(el => {
-  el.addEventListener('mouseenter', () => {
-    hoverSound.currentTime = 0;
-    hoverSound.play();
-  });
-});
-
-// ========== ⚡ FLASH EFFECT OP DISCORD ==========
-const discordBtn = document.querySelector('.btn-discord');
-discordBtn.addEventListener('click', () => {
-  const flash = document.createElement('div');
-  Object.assign(flash.style, {
-    position: 'fixed',
-    inset: 0,
-    background: 'radial-gradient(circle, rgba(255,166,77,0.5), transparent 70%)',
-    zIndex: 10000,
-    opacity: '1',
-    transition: 'opacity 1.2s ease-out',
-  });
-  document.body.appendChild(flash);
-  setTimeout(() => flash.style.opacity = '0', 100);
-  setTimeout(() => flash.remove(), 1200);
-});
-
-// ========== ✨ INTERACTIVE GLOW ROADMAP ==========
-document.querySelectorAll('.milestone').forEach(m => {
-  m.addEventListener('mousemove', e => {
-    const rect = m.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 40;
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 40;
-    m.style.transform = `rotateX(${y/5}deg) rotateY(${x/5}deg)`;
-  });
-  m.addEventListener('mouseleave', () => {
-    m.style.transform = '';
-  });
-});
+// ========== 🍂 SEIZOENSEFFECTEN ==========
+const month = new Date().getMonth(); 
+if ([11, 0].includes(month)) document.body.classList.add('snow-effect');
+if ([3, 4].includes(month)) document.body.classList.add('spring-effect');
 </script>
 </body>
 </html>
